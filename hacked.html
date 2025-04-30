@@ -8,16 +8,74 @@
     body {
       margin: 0;
       padding: 0;
-      background: black;
-      color: #00ff00;
+      background: #8b0000;
+      color: white;
       font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
       overflow: hidden;
-      animation: flashBg 2s infinite;
     }
 
-    @keyframes flashBg {
-      0%, 100% { background-color: black; }
-      50% { background-color: #0f0f0f; }
+    h1 {
+      font-size: 3.5em;
+      margin-bottom: 10px;
+      color: #ff0000;
+      text-shadow: 0 0 10px black;
+      animation: flicker 1.5s infinite;
+    }
+
+    .skull {
+      font-size: 8em;
+      color: white;
+      animation: pulse 1.5s infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .timer {
+      font-size: 2.5em;
+      color: #ffff00;
+      margin-bottom: 20px;
+    }
+
+    .text {
+      font-size: 1.2em;
+      max-width: 600px;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .wallet {
+      background: #222;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 1.1em;
+      color: #00ff00;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: #ff9900;
+      color: black;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      cursor: not-allowed;
+      box-shadow: 0 0 15px #ff9900;
     }
 
     .scanlines {
@@ -26,70 +84,69 @@
       height: 100%;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(0, 255, 0, 0.05),
-        rgba(0, 255, 0, 0.05) 1px,
-        transparent 1px,
-        transparent 4px
+        rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.2) 2px,
+        transparent 2px,
+        transparent 5px
       );
-      z-index: 2;
       pointer-events: none;
-    }
-
-    .content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 1;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 3em;
-      animation: flicker 1s infinite;
-    }
-
-    p {
-      font-size: 1.2em;
-      line-height: 1.6;
-      margin-top: 20px;
-      animation: scrollText 10s linear infinite;
-    }
-
-    @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    @keyframes scrollText {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-20px); }
+      z-index: 2;
     }
   </style>
 </head>
 <body>
   <div class="scanlines"></div>
-  <div class="content">
-    <h1>ВАШ WIFI ВЗЛОМАН</h1>
-    <p>
-      Мы успешно получили доступ к вашей сети.<br>
-      Все ваши устройства под нашим контролем.<br>
-      Ваши пароли, переписки и данные уже сохранены.<br>
-      Вы думали, что защищены? Ошибка.<br><br>
 
-      Это только предупреждение.<br>
-      Настоящая атака начнётся через несколько минут.<br>
-      Измените пароли, отключите сеть, но это не поможет.<br><br>
+  <div class="skull">☠</div>
+  <h1>ВАШ WIFI ВЗЛОМАН</h1>
 
-      Мы видим всё. Мы слышим всё.<br>
-      Ваша конфиденциальность — это иллюзия.<br>
-      Ваш Wi-Fi: Pushkin<br>
-      Ваш IP: 188.138.146.238<br><br>
+  <div class="timer" id="countdown">ОСТАЛОСЬ: --:--:--</div>
 
-      Если вы хотите остановить нас — уже слишком поздно.<br>
-      Мы здесь. Мы рядом.
-    </p>
+  <div class="text">
+    Ваша сеть была скомпрометирована.<br>
+    Все файлы зашифрованы. Ваша личная информация в опасности.<br><br>
+    Чтобы восстановить доступ, отправьте 0.05 BTC на кошелёк ниже до 15:00.<br>
+    В противном случае вся информация будет опубликована.<br>
+    Вы не сможете остановить это. Времени мало.
   </div>
+
+  <div class="wallet" id="wallet">Кошелёк: 3Bv1uA2F9xJv7QzWx9DkKpE0R8cX9aT5fF</div>
+
+  <button class="btn">Pay with Bitcoin</button>
+
+  <script>
+    // Таймер до 15:00 сегодняшнего дня
+    function updateTimer() {
+      const now = new Date();
+      const deadline = new Date();
+      deadline.setHours(15, 0, 0, 0);
+      if (now > deadline) {
+        document.getElementById("countdown").innerText = "ВРЕМЯ ИСТЕКЛО";
+        return;
+      }
+
+      const diff = deadline - now;
+      const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+      const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, '0');
+      const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+      document.getElementById("countdown").innerText = `ОСТАЛОСЬ: ${hours}:${minutes}:${seconds}`;
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // Генерация фейкового Bitcoin-адреса
+    function generateFakeWallet() {
+      const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+      let address = '3';
+      for (let i = 0; i < 33; i++) {
+        address += chars[Math.floor(Math.random() * chars.length)];
+      }
+      document.getElementById('wallet').innerText = 'Кошелёк: ' + address;
+    }
+
+    generateFakeWallet();
+  </script>
 </body>
   </html>
